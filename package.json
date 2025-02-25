@@ -1,0 +1,25 @@
+{
+  "name": "capstone_testing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+     "lint": "eslint ./ && echo 'No linting issues found!'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChekYeaw/capstone_testing.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ChekYeaw/capstone_testing/issues"
+  },
+  "homepage": "https://github.com/ChekYeaw/capstone_testing#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.21.0",
+    "eslint": "^9.21.0",
+    "globals": "^16.0.0"
+  }
+}
