@@ -85,3 +85,17 @@ jobs:
      - name: Wait for Deployment (Ensure services are up)
        run: sleep 60
  
+     - name: Insert Item into DynamoDB
+       env:
+         DYNAMODB_TABLE: "shop_floor_alerts"  # DynamoDB table name
+         AWS_REGION: "ap-southeast-1"         # AWS Region
+       run: |
+         aws dynamodb put-item --table-name $DYNAMODB_TABLE --item '{
+           "PK": {"S": "PlantA_Line1"},
+           "SK": {"S": "KpiName_Production Efficiency"},
+           "Plant": {"S": "PlantA"},
+           "Line": {"S": "Line1"},
+           "KpiName": {"S": "Production Efficiency"},
+           "KpiValue": {"N": "95"},
+           "ThresholdValue": {"N": "90"}
+         }' --region $AWS_REGION
