@@ -73,3 +73,12 @@ jobs:
          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
          aws-region: ${{ env.AWS_REGION }}
     
+     - name: Terraform Init
+       run: terraform init
+ 
+     - name: Terraform Apply (Deploy Infrastructure)
+       run: terraform apply -auto-approve
+ 
+     - name: Wait for Deployment (Ensure services are up)
+       run: sleep 60
+ 
