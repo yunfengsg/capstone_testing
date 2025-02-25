@@ -51,7 +51,7 @@ jobs:
      if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/uat' || github.ref == 'refs/heads/prod'
      env:
           AWS_REGION: ap-southeast-1
-          DYNAMODB_TABLE: kpi-alerts
+          DYNAMODB_TABLE: shop_floor_alerts
     
      steps:
      - name: Checkout Code
