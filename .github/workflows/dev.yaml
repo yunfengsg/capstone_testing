@@ -77,7 +77,7 @@ jobs:
           terraform apply -target=module.lab02 -auto-approve
 
     - name: Terraform Destroy
-      run: terraform destroy
+      run: terraform destroy -auto-approve
        
          
   # full-integration-tests:
