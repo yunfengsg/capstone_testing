@@ -8,9 +8,8 @@ variable "profile_name" {
   default = "default"
 }
 
-/*
+
 variable "use_localstack" {
   type    = bool
   default = false
 }
-*/
