@@ -50,7 +50,6 @@ jobs:
     - name: Terraform Validate
       run: terraform validate
 
-
     - name: Start LocalStack
       uses: LocalStack/setup-localstack@v0.2.2
       with:
@@ -70,6 +69,10 @@ jobs:
     - name: Terraform Plan
       run: terraform plan
 
+    - name: Reset LocalStack state
+      run: |
+        curl -X POST http://localhost:4566/_localstack/reset
+      
     - name: Run Terraform Apply (LocalStack)
       # env:
       #     USE_LOCALSTACK: "true"
@@ -93,9 +96,7 @@ jobs:
     - name: Terraform Destroy
       run: terraform destroy -auto-approve
 
-    - name: Local Stack Stop
-      run: localstack stop 
-    
+
   # full-integration-tests:
   #    runs-on: ubuntu-latest
   #    needs: basic-tests
