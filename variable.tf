@@ -9,7 +9,7 @@ variable "profile_name" {
 }
 
 
-variable "use_localstack" {
-  type    = bool
-  default = false
-}
+#variable "use_localstack" {
+# type    = bool
+#  default = false
+#}
