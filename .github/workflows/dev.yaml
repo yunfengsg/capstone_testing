@@ -76,9 +76,8 @@ jobs:
     - name: Terraform State List
       run: terraform state list
 
-
-    - name: Terraform State 
-      run: terraform state show aws_lambda_function.shopFloorData_txnService
+    - name: Terraform Destory 
+      run: terraform destroy -autu-approve
 
     - name: Run Terraform Apply (LocalStack)
       env:
