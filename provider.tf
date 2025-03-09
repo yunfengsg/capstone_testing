@@ -43,7 +43,7 @@ terraform {
 }
 
 provider "aws" {
-  region = var.aws_region
+  region = "ap-southeast-1"
 
   # Use LocalStack settings if USE_LOCALSTACK is true
   dynamic "endpoints" {
