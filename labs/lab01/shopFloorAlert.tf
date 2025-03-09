@@ -14,8 +14,8 @@ resource "aws_ses_email_identity" "delivery_alert_email" {
 
 ## shopFloorAlert Lambda Execution Role ##
 
-resource "aws_iam_policy" "shopFloorAlert_lambda_policy" {
-  name        = "shopFloorAlert_lambda_policy"
+resource "aws_iam_policy" "shopFloorAlert_lambda_policy_lab1" {
+  name        = "shopFloorAlert_lambda_policy_lab1"
   path        = "/"
   description = "Policy to be attached to lambda"
 
@@ -41,8 +41,8 @@ resource "aws_iam_policy" "shopFloorAlert_lambda_policy" {
   })
 }
 
-resource "aws_iam_role" "shopFloorAlert_lambda_role" {
-  name = "shopFloorAlert_lambda_role"
+resource "aws_iam_role" "shopFloorAlert_lambda_role_lab1" {
+  name = "shopFloorAlert_lambda_role_lab1"
 
   assume_role_policy = <<EOF
 {
@@ -62,21 +62,21 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "shopFloorAlert_lambda_role_attach" {
-  role       = aws_iam_role.shopFloorAlert_lambda_role.name
-  policy_arn = aws_iam_policy.shopFloorAlert_lambda_policy.arn
+  role       = aws_iam_role.shopFloorAlert_lambda_role_lab1.name
+  policy_arn = aws_iam_policy.shopFloorAlert_lambda_policy_lab1.arn
 }
 
 ## shopFloorAlert Lambda Function ##
 
 data "archive_file" "lambdaalert" {
   type        = "zip"
-  source_file = "${path.module}/lambdaAlert/sendAlertEmail/index.js"
+  source_file = "${path.module}/lambdaAlert/sendAlertEmail/index1.js"
   output_path = "sendAlertEmail.zip"
 }
 
 resource "aws_lambda_function" "send_alert_email" {
   function_name = "SendAlertEmail"
-  role          = aws_iam_role.shopFloorAlert_lambda_role.arn
+  role          = aws_iam_role.shopFloorAlert_lambda_role_lab1.arn
   runtime       = "nodejs16.x"
   filename      = "sendAlertEmail.zip"
   handler       = "index.handler"
