@@ -77,7 +77,7 @@ jobs:
       run: terraform state list
 
     - name: Terraform Destory 
-      run: terraform destroy -autu-approve
+      run: terraform destroy -auto-approve
 
     - name: Run Terraform Apply (LocalStack)
       env:
