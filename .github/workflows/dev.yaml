@@ -74,8 +74,8 @@ jobs:
         curl -X POST http://localhost:4566/_localstack/reset
       
     - name: Run Terraform Apply (LocalStack)
-      # env:
-      #     USE_LOCALSTACK: "true"
+      env:
+           USE_LOCALSTACK: "true"
       run: |
           terraform apply -target=module.lab02 -auto-approve
 
