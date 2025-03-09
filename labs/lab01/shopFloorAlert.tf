@@ -108,6 +108,12 @@ resource "aws_dynamodb_table" "shop_floor_alerts" {
   }
 }
 
+resource "null_resource" "delay" {
+  provisioner "local-exec" {
+    command = "sleep 30" # Wait for 30 seconds
+  }
+}
+
 resource "aws_lambda_event_source_mapping" "trigger" {
 
   batch_size        = 100
@@ -115,9 +121,8 @@ resource "aws_lambda_event_source_mapping" "trigger" {
   function_name     = aws_lambda_function.send_alert_email.arn
   starting_position = "LATEST"
 
-  lifecycle {
-    ignore_changes = [event_source_arn]
-  }
+ depends_on = [null_resource.delay]
+ 
 }
 
 
