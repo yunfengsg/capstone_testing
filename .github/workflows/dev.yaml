@@ -50,8 +50,6 @@ jobs:
     - name: Terraform Validate
       run: terraform validate
 
-    - name: Terraform Plan
-      run: terraform plan
 
     - name: Start LocalStack
       uses: LocalStack/setup-localstack@v0.2.2
@@ -69,7 +67,9 @@ jobs:
             done
             echo "LocalStack is ready!" 
 
-            
+    - name: Terraform Plan
+      run: terraform plan
+
     - name: Run Terraform Apply (LocalStack)
       # env:
       #     USE_LOCALSTACK: "true"
