@@ -76,6 +76,20 @@ jobs:
       run: |
           terraform apply -target=module.lab02 -auto-approve
 
+
+    - name: Terraform State
+      run: terraform state rm module.lab01.aws_ses_email_identity.delivery_alert_email
+
+    - name: Terraform State
+      run: terraform state rm module.lab01.aws_ses_email_identity.source_alert_email
+
+    - name: Destroy Delivery Email
+      run: terraform destroy -target=module.lab01.aws_ses_email_identity.delivery_alert_email
+
+    - name: Destroy Source Email
+      run: terraform destroy -target=module.lab01.aws_ses_email_identity.source_alert_email
+
+
     - name: Terraform Destroy
       run: terraform destroy -auto-approve
        
