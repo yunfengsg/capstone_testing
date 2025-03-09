@@ -74,7 +74,7 @@ jobs:
       # env:
       #     USE_LOCALSTACK: "true"
       run: |
-          terraform apply -target=module.lab01 -target=module.lab02 -auto-approve
+          terraform apply -target=module.lab02 -auto-approve
 
     - name: Terraform Destroy
       run: terraform destroy
