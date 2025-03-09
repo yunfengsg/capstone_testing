@@ -53,16 +53,12 @@ jobs:
     - name: Terraform Plan
       run: terraform plan
 
-    - name: Install Docker
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y docker.io
-        sudo systemctl start docker
-        sudo systemctl enable docker
-
     - name: Start LocalStack
-      run: |
-          docker run -d --name localstack -p 4566:4566 localstack/localstack:latest
+      uses: LocalStack/setup-localstack@v0.2.2
+      with:
+        image-tag: 'latest'
+        install-awslocal: 'true'
+          
 
     - name: Wait for LocalStack to be ready
       run: |
