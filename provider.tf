@@ -1,3 +1,5 @@
+/*
+
 terraform {
   required_version = ">= 1.9"
   required_providers {
@@ -28,7 +30,7 @@ provider "aws" {
 
 }
 
-/*
+*/
 
 terraform {
   required_version = ">= 1.9"
@@ -71,4 +73,4 @@ variable "aws_region" {
   default = "ap-southeast-1"
 }
 
-*/
+
