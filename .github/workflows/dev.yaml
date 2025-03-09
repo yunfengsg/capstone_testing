@@ -40,19 +40,6 @@ jobs:
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
-
-    - name: Install Docker
-      run: |
-            sudo apt-get update
-            sudo apt-get install -y docker.io
-            sudo systemctl start docker
-            sudo systemctl enable docker
-
-    - name: Grant Docker permissions
-      run: |
-         sudo groupadd docker || true
-         sudo usermod -aG docker $USER
-         newgrp docker
          
     - name: Start LocalStack
       run: |
@@ -76,13 +63,9 @@ jobs:
       run: |
           terraform apply -target=module.lab01 -target=module.lab02 -auto-approve
 
-    - name: Check LocalStack logs
-      run: |
-            docker logs localstack
-
     - name: Terraform Destroy
       run: terraform destroy
-          
+       
          
   # full-integration-tests:
   #    runs-on: ubuntu-latest
