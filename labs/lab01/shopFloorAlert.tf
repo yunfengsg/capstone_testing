@@ -113,4 +113,10 @@ resource "aws_lambda_event_source_mapping" "trigger" {
   event_source_arn  = aws_dynamodb_table.shop_floor_alerts.stream_arn
   function_name     = aws_lambda_function.send_alert_email.arn
   starting_position = "LATEST"
+
+depends_on = [aws_dynamodb_table.shop_floor_alerts]
+
 }
+
+
+
