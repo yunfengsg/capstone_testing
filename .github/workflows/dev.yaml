@@ -106,14 +106,13 @@ jobs:
 
   full-integration-tests:
     runs-on: ubuntu-latest
-    environment: uat
     needs: basic-tests
     if: github.base_ref == 'uat' || github.base_ref == 'prod'
 
     steps:
       - name: Deploy
         run: echo "deploy to uat"
-      
+
   #   env:
   #        AWS_REGION: ap-southeast-1
   #        DYNAMODB_TABLE: shop_floor_alerts
