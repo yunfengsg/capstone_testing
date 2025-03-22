@@ -12,6 +12,7 @@ jobs:
   basic-tests:
     runs-on: ubuntu-latest
     environment: dev 
+   
     
     steps:
     - name: Checkout
@@ -100,44 +101,48 @@ jobs:
   #    run: terraform destroy -target=module.lab01.aws_ses_email_identity.source_alert_email
 
 
-    - name: Terraform Destroy
-      run: terraform destroy -auto-approve
+  #  - name: Terraform Destroy
+  #   run: terraform destroy -auto-approve
 
 
   full-integration-tests:
-     runs-on: ubuntu-latest
-     needs: basic-tests
-     if: github.ref == 'refs/heads/uat'
-     
-     env:
-          AWS_REGION: ap-southeast-1
-          DYNAMODB_TABLE: shop_floor_alerts
-    
-     steps:
-     - name: Checkout Code
-       uses: actions/checkout@v4
-    
-     - name: Set Up Node.js
-       uses: actions/setup-node@v4
-       with:
-         node-version: 18
-         cache: 'npm'
-    
-     - name: Install Dependencies
-       run: npm install
-    
-     - name: Configure AWS Credentials
-       uses: aws-actions/configure-aws-credentials@v2
-       with:
-         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-         aws-region: ${{ env.AWS_REGION }}
-    
-     - name: Setup Terraform
-       uses: hashicorp/setup-terraform@v2
+    runs-on: ubuntu-latest
+    environment: uat
+    needs: basic-tests
 
-     - name: Terraform Init
-       run: terraform init
+    steps:
+      - name: Deploy
+        run: echo "deploy to uat"
+      
+  #   env:
+  #        AWS_REGION: ap-southeast-1
+  #        DYNAMODB_TABLE: shop_floor_alerts
+    
+  #   steps:
+  #   - name: Checkout Code
+  #     uses: actions/checkout@v4
+    
+  #   - name: Set Up Node.js
+  #     uses: actions/setup-node@v4
+  #     with:
+  #       node-version: 18
+  #       cache: 'npm'
+    
+  #   - name: Install Dependencies
+  #     run: npm install
+    
+  #   - name: Configure AWS Credentials
+  #     uses: aws-actions/configure-aws-credentials@v2
+  #     with:
+  #       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #       aws-region: ${{ env.AWS_REGION }}
+    
+  #   - name: Setup Terraform
+  #     uses: hashicorp/setup-terraform@v2
+
+  #   - name: Terraform Init
+  #     run: terraform init
  
     #  - name: Terraform Apply (Deploy Infrastructure)
     #    run: terraform apply -auto-approve
