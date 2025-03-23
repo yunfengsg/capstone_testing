@@ -1,4 +1,4 @@
-name: CI/CD Pipeline Industrial IoT Application
+name: CI/CD Pipeline for Smart Industrial IoT Test
 
 on:
   
