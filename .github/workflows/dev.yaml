@@ -9,7 +9,7 @@ on:
       - prod
         
 jobs:
-  basic-tests:
+  dev:
     runs-on: ubuntu-latest
     environment: dev 
     
@@ -104,9 +104,9 @@ jobs:
   #   run: terraform destroy -auto-approve
 
 
-  full-integration-tests:
+  uat:
     runs-on: ubuntu-latest
-    needs: basic-tests
+    needs: dev
     if: github.base_ref == 'uat' || github.base_ref == 'prod'
 
     steps:
