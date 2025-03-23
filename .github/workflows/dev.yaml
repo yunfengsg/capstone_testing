@@ -1,4 +1,4 @@
-name: CI/CD Pipeline for Smart Industrial IoT Test
+name: CI/CD Pipeline for Industrial IoT Application
 
 on:
   
@@ -100,10 +100,6 @@ jobs:
 
   #  - name: Destroy Source Email
   #    run: terraform destroy -target=module.lab01.aws_ses_email_identity.source_alert_email
-
-
-
-
 
   uat:
     runs-on: ubuntu-latest
