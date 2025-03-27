@@ -66,6 +66,10 @@ resource "aws_lambda_function" "shopFloorData_txnService" {
 
   source_code_hash = data.archive_file.lambdadata.output_base64sha256
 
+  # Enable X-Ray tracing
+  tracing_config { # tschui added to solve the severity issue detected by Snyk
+    mode = "Active"
+  }
 }
 
 ## AWI API Gateway ##
@@ -87,7 +91,8 @@ resource "aws_api_gateway_method" "post_shopFloor_data" {
   rest_api_id   = aws_api_gateway_rest_api.shopFloor_api_gw.id
   resource_id   = aws_api_gateway_resource.shopFloor_resource.id
   http_method   = "POST"
-  authorization = "NONE"
+  #authorization = "NONE"
+  authorization = "AWS_IAM" # tschui changed to solve the severity issue detected by Snyk
 }
 
 resource "aws_api_gateway_method_response" "post_shopFloor_data_response_200" {
@@ -124,7 +129,8 @@ resource "aws_api_gateway_method" "get_shopFloor_data" {
   rest_api_id   = aws_api_gateway_rest_api.shopFloor_api_gw.id
   resource_id   = aws_api_gateway_resource.shopFloor_resource.id
   http_method   = "GET"
-  authorization = "NONE"
+  #authorization = "NONE"
+  authorization = "AWS_IAM" # tschui changed to solve the severity issue detected by Snyk
   request_parameters = {
     "method.request.querystring.Plant" = true,
     "method.request.querystring.Line"  = true
@@ -165,7 +171,8 @@ resource "aws_api_gateway_method" "delete_shopFloor_data" {
   rest_api_id   = aws_api_gateway_rest_api.shopFloor_api_gw.id
   resource_id   = aws_api_gateway_resource.shopFloor_resource.id
   http_method   = "DELETE"
-  authorization = "NONE"
+  #authorization = "NONE"
+  authorization = "AWS_IAM" # tschui changed to solve the severity issue detected by Snyk 
   request_parameters = {
     "method.request.querystring.Plant"   = true,
     "method.request.querystring.Line"    = true,
@@ -238,8 +245,24 @@ resource "aws_api_gateway_deployment" "shopFloorData_api_deploy" {
     create_before_destroy = true
   }
 }
+
+resource "aws_cloudwatch_log_group" "api_gateway_logs" { // tschui added to solve the severity issue detected by Snyk
+  name              = "/aws/api/gateway/logs"
+  retention_in_days = 30
+}
+
 resource "aws_api_gateway_stage" "stage-andon-api" {
   deployment_id = aws_api_gateway_deployment.shopFloorData_api_deploy.id
   rest_api_id   = aws_api_gateway_rest_api.shopFloor_api_gw.id
   stage_name    = "dev"
+
+   # Enabling X-Ray tracing
+  xray_tracing_enabled = true # tschui added to solve the severity issue detected by Snyk
+
+  # Enabling Access Logging
+  access_log_settings { # tschui added to solve the severity issue detected by Snyk
+    destination_arn = aws_cloudwatch_log_group.api_gateway_logs.arn
+    format          = "$context.requestId - $context.identity.sourceIp - $context.identity.userAgent - $context.requestTime - $context.status"
+  }
 }
+
