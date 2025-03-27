@@ -155,6 +155,11 @@ resource "aws_lambda_function" "processShopFloorMsgs" {
   timeout       = "15"
 
   source_code_hash = data.archive_file.lambda.output_base64sha256
+  
+  # Enable X-Ray tracing
+  tracing_config { # tschui added to solve the severity issue detected by Snyk
+    mode = "Active"
+  }
 
 }
 
