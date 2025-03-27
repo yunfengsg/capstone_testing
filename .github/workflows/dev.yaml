@@ -1,7 +1,7 @@
 name: CI/CD Pipeline for Industrial IoT Application
 
 on:
-  workflow_dispatch:  # Manually trigger the workflow
+  #workflow_dispatch:  # Manually trigger the workflow
   
   pull_request:
     branches:
