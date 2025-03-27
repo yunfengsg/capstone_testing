@@ -7,3 +7,9 @@ variable "profile_name" {
   type    = string
   default = "default"
 }
+
+
+#variable "use_localstack" {
+# type    = bool
+#  default = false
+#}
