@@ -174,7 +174,7 @@ jobs:
 
   terraform_destroy:
     runs-on: ubuntu-latest  # Define the runner environment for destroy
-    needs: terraform_apply  # Ensure destroy runs after apply job completes
+    needs: uat  # Ensure destroy runs after apply job completes
     if: ${{ github.event_name == 'workflow_dispatch' }}  # Run this job only on manual trigger
     steps:
     - name: Checkout
