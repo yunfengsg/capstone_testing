@@ -197,7 +197,7 @@ jobs:
     - name: Terraform Destroy
       run: terraform destroy --auto-approve  # Destroy the resources with auto-approve
 
-    prod:
+  prod:
     runs-on: ubuntu-latest
     needs: uat
     if: github.base_ref == 'prod'
