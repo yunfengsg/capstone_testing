@@ -1,8 +1,6 @@
 name: CI/CD Pipeline for Industrial IoT Application
 
 on:
-  workflow_dispatch:  # Manually trigger the workflow
-  
   pull_request:
     branches:
       - dev
@@ -171,30 +169,6 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
-
-  #terraform_destroy:
-   # runs-on: ubuntu-latest  # Define the runner environment for destroy
-    #needs: uat  # Ensure destroy runs after apply job completes
-    if: ${{ github.event_name == 'workflow_dispatch' }}  # Run this job only on manual trigger
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3  # Check out the repository code
-
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1  # Configure AWS credentials
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}  # Use stored secrets
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  # Use stored secrets
-        aws-region: ${{ env.AWS_REGION }}  # Use the defined AWS region
-
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2  # Setup Terraform on the runner
-
-    - name: Terraform Init
-      run: terraform init  # Initialize Terraform configuration
-
-    - name: Terraform Destroy
-      run: terraform destroy --auto-approve  # Destroy the resources with auto-approve
 
   prod:
     runs-on: ubuntu-latest
