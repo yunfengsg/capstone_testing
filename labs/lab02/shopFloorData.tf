@@ -1,7 +1,13 @@
+locals {
+    env           = "prod"                                      # Need to update prod or non-prod
+    name_prefix   = "grp3" # your base name prefix
+    env_suffix    = "-${local.env}"                                # always suffix the env
+  }
+
 ## shopFloorData Lambda Execution Role ##
 
 resource "aws_iam_policy" "shopFloorData_lambda_policy_lab2" {
-  name        = "shopFloorData_lambda_policy_lab2"
+  name        = "shopFloorData_lambda_policy_lab2${local.env_suffix}"       #local.env_suffix added
   path        = "/"
   description = "Policy to be attached to ShopFloorData_TxnService lambda"
 
@@ -24,7 +30,7 @@ resource "aws_iam_policy" "shopFloorData_lambda_policy_lab2" {
 }
 
 resource "aws_iam_role" "shopFloorData_lambda_role_lab2" {
-  name = "shopFloorData_lambda_role_lab2"
+  name = "shopFloorData_lambda_role_lab2${local.env_suffix}"       #local.env_suffix added
 
   assume_role_policy = <<EOF
 {
@@ -57,7 +63,7 @@ data "archive_file" "lambdadata" {
 }
 
 resource "aws_lambda_function" "shopFloorData_txnService" {
-  function_name = "ShopFloorData_TxnService"
+  function_name = "ShopFloorData_TxnService${local.env_suffix}"       #local.env_suffix added
   role          = aws_iam_role.shopFloorData_lambda_role_lab2.arn
   runtime       = "nodejs16.x"
   filename      = "shopFloorData.zip"
@@ -247,7 +253,7 @@ resource "aws_api_gateway_deployment" "shopFloorData_api_deploy" {
 }
 
 resource "aws_cloudwatch_log_group" "api_gateway_logs" { // tschui added to solve the severity issue detected by Snyk
-  name              = "/aws/api/gateway/logs"
+  name              =  "/aws/api/gateway/logs${local.env_suffix}"          #local.env_suffix added
   retention_in_days = 30
 }
 
