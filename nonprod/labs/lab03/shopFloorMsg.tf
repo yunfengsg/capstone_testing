@@ -120,7 +120,7 @@ resource "aws_iam_policy" "lambda_policy" {
   })
 }
 resource "aws_iam_role" "lambda_role" {
-  name = "lambda_role"
+  name = "lambda_role${local.env_suffix}"
 
   assume_role_policy = <<EOF
 {
