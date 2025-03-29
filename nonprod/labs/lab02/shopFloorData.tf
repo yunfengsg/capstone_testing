@@ -81,7 +81,7 @@ resource "aws_lambda_function" "shopFloorData_txnService" {
 ## AWI API Gateway ##
 
 resource "aws_api_gateway_rest_api" "shopFloor_api_gw" {
-  name        = "shopFloor_api_gw"
+  name        = "shopFloor_api_gw${local.env_suffix}"
   description = "REST API to CRUD Shop Floor Data"
 }
 
