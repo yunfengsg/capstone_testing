@@ -1,6 +1,8 @@
 locals {
-  name_prefix = "chek" # provide your name prefix
-}
+    env           = "nonprod"                                      # Need to update prod or non-prod
+    name_prefix   = "grp3" # your base name prefix
+    env_suffix    = "-${local.env}"                                # always suffix the env 
+  }
 
 ##SES##
 
@@ -15,7 +17,7 @@ resource "aws_ses_email_identity" "delivery_alert_email" {
 ## shopFloorAlert Lambda Execution Role ##
 
 resource "aws_iam_policy" "shopFloorAlert_lambda_policy_lab1" {
-  name        = "shopFloorAlert_lambda_policy_lab1"
+  name        = "shopFloorAlert_lambda_policy_lab1${local.env_suffix}"       #local.env_suffix added
   path        = "/"
   description = "Policy to be attached to lambda"
 
@@ -42,7 +44,7 @@ resource "aws_iam_policy" "shopFloorAlert_lambda_policy_lab1" {
 }
 
 resource "aws_iam_role" "shopFloorAlert_lambda_role_lab1" {
-  name = "shopFloorAlert_lambda_role_lab1"
+  name = "shopFloorAlert_lambda_role_lab1${local.env_suffix}"       #local.env_suffix added  
 
   assume_role_policy = <<EOF
 {
@@ -75,7 +77,7 @@ data "archive_file" "lambdaalert" {
 }
 
 resource "aws_lambda_function" "send_alert_email" {
-  function_name = "SendAlertEmail"
+  function_name = "SendAlertEmail${local.env_suffix}"               #local.env_suffix added
   role          = aws_iam_role.shopFloorAlert_lambda_role_lab1.arn
   runtime       = "nodejs16.x"
   filename      = "sendAlertEmail.zip"
@@ -93,12 +95,12 @@ resource "aws_lambda_function" "send_alert_email" {
 ##dynamodb##
 
 resource "aws_kms_key" "shop_floor_alerts_kms" { # tschui added to solve the severity issue detected by Snyk
-  description         = "KMS key for encrypting shop_floor_alerts DynamoDB table"
+  description         = "KMS key for ${local.env} shop_floor_alerts DynamoDB table"
   enable_key_rotation = true
 }
 
 resource "aws_dynamodb_table" "shop_floor_alerts" {
-  name             = "shop_floor_alerts"
+  name             = "shop_floor_alerts${local.env_suffix}"     #local.env_suffix added
   billing_mode     = "PROVISIONED"
   stream_enabled   = true
   stream_view_type = "NEW_IMAGE"
