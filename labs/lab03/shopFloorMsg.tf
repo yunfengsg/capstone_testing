@@ -86,7 +86,7 @@ resource "aws_iot_topic_rule" "push_to_sqs" {
   name = "push_to_sqs${replace(local.env_suffix, "-", "_")}"  #local.env_suffix added
   enabled     = true
   sql         = "SELECT * from '1001/+/ShopFloorData'"
-  sql_version = "2016-03-23
+  sql_version = "2016-03-23"
 
   sqs {
     queue_url  = aws_sqs_queue.shop_floor_data_queue.url
