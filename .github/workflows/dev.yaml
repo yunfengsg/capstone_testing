@@ -170,12 +170,12 @@ jobs:
           echo "Waiting for manual approval before applying Terraform changes."
         timeout-minutes: 5  # Optional, how long to wait before timing out
 
-      - name: Request manual approval
-        uses: hmarr/auto-approve-action@v1
-        with:
-          approval: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Request manual approval
+      #   uses: hmarr/auto-approve-action@v1
+      #   with:
+      #     approval: true
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   Deployment:
     needs: Review
