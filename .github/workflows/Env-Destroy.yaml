@@ -44,7 +44,7 @@ jobs:
  #       run: terraform state list || echo "No state file found"
         
       - name: Plan Destroy 
-        run: terraform chdir=${{ github.event.inputs.tfstate_key }} plan -destroy
+        run: terraform -chdir=${{ github.event.inputs.tfstate_key }} plan -destroy
 
  #     - name: Destroy AWS Resources
  #       run: terraform -chdir=${{ github.event.inputs.tfstate_key }} destroy -auto-approve
