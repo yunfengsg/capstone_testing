@@ -11,9 +11,9 @@ on:
 #      - prod
 
 jobs:
-  Basic Integration Test:
+  Basic-Integration-Test:
     runs-on: ubuntu-latest
-    environment: Basic Integration Test
+    environment: Basic-Integration-Test
     
     steps:
     - name: Checkout
@@ -96,10 +96,10 @@ jobs:
   #  - name: Destroy Source Email
   #    run: terraform destroy -target=module.lab01.aws_ses_email_identity.source_alert_email
 
-  Vulnerability Test:
-    needs: Basic Integration Test
+  Vulnerability-Test:
+    needs: Basic-Integration-Test
     runs-on: ubuntu-latest
-    environment: Vulnerability Test 
+    environment: Vulnerability-Test 
 
     steps:
     - name: Checkout repository
@@ -126,7 +126,7 @@ jobs:
       run: snyk test     
 
   Review:
-    needs: Vulnerability Test
+    needs: Vulnerability-Test
     runs-on: ubuntu-latest
     environment: Review
 
