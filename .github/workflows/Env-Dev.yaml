@@ -166,22 +166,22 @@ jobs:
       uses: hashicorp/setup-terraform@v2
 
     - name: Terraform Format
-      run: terraform -chdir=${{ github.event.inputs.tfstate_key }}  fmt -recursive
+      run: terraform -chdir=prod  fmt -recursive
 
     - name: Terraform fmt
-      run: terraform -chdir=${{ github.event.inputs.tfstate_key }}  fmt -check
+      run: terraform -chdir=prod  fmt -check
 
     - name: Terraform Init
-      run: terraform -chdir=${{ github.event.inputs.tfstate_key }} init
+      run: terraform -chdir=prod init
 
     - name: Terraform Validate
-      run: terraform -chdir=${{ github.event.inputs.tfstate_key }} validate
+      run: terraform -chdir=prod validate
 
     - name: Terraform Plan
-      run: terraform -chdir=${{ github.event.inputs.tfstate_key }} plan
+      run: terraform -chdir=prod plan
 
     - name: Terraform Apply
-      run: terraform -chdir=${{ github.event.inputs.tfstate_key }} apply -auto-approve
+      run: terraform -chdir=prod apply -auto-approve
 
   #  - name: Terraform Destroy
   #    run: terraform destroy -auto-approve
