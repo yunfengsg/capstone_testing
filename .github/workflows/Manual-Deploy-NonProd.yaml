@@ -1,4 +1,4 @@
-name: Deploy Prod
+name: Manual Deploy NonProd
 
 on:
   workflow_dispatch:  # Manually trigger the workflow
@@ -166,22 +166,22 @@ jobs:
       uses: hashicorp/setup-terraform@v2
 
     - name: Terraform Format
-      run: terraform -chdir=prod  fmt -recursive
+      run: terraform -chdir=nonprod  fmt -recursive
 
     - name: Terraform fmt
-      run: terraform -chdir=prod  fmt -check
+      run: terraform -chdir=nonprod  fmt -check
 
     - name: Terraform Init
-      run: terraform -chdir=prod init
+      run: terraform -chdir=nonprod init
 
     - name: Terraform Validate
-      run: terraform -chdir=prod validate
+      run: terraform -chdir=nonprod validate
 
     - name: Terraform Plan
-      run: terraform -chdir=prod plan
+      run: terraform -chdir=nonprod plan
 
     - name: Terraform Apply
-      run: terraform -chdir=prod apply -auto-approve
+      run: terraform -chdir=nonprod apply -auto-approve
 
   #  - name: Terraform Destroy
   #    run: terraform destroy -auto-approve
