@@ -1,17 +1,17 @@
 name: CI/CD Pipeline for Industrial IoT Application
 
-on:
-  workflow_dispatch:  # Manually trigger the workflow
+# on:
+#   workflow_dispatch:  # Manually trigger the workflow
 
-#on:
-#  pull_request:
-#    branches:
-#      - dev
-#      - uat
-#      - prod
+on:
+ pull_request:
+   branches:
+     - main
 
 jobs:
-  prod:
+
+jobs:
+  Build:
     runs-on: ubuntu-latest
     environment: prod
     
@@ -31,8 +31,39 @@ jobs:
     - name: Lint Code
       run: npm run lint
 
+  Unit_Test:
+    runs-on: ubuntu-latest
+    needs: Build
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Set Up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18
+        cache: 'npm'
+
+    - name: Install Dependencies
+      run: npm install     
+
     - name: Unit Test
       run: npm run test
+
+  Basic_Integration_Test:
+    runs-on: ubuntu-latest
+    needs: Unit_Test
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Set Up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18
+        cache: 'npm'
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -41,11 +72,14 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ap-southeast-1
 
-    # - name: Setup Terraform
-    #   uses: hashicorp/setup-terraform@v2
-         
-    # - name: Terraform fmt
-    #   run: terraform fmt -check
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+
+    - name: Terraform Format
+      run: terraform -chdir=prod  fmt -recursive
+
+    - name: Terraform fmt
+      run: terraform -chdir=prod  fmt -check
 
     # - name: Terraform Init
     #   run: terraform init
@@ -103,34 +137,14 @@ jobs:
   #  - name: Destroy Source Email
   #    run: terraform destroy -target=module.lab01.aws_ses_email_identity.source_alert_email
 
-  # uat:
-  #   runs-on: ubuntu-latest
-  #   needs: dev
-  #   if: github.base_ref == 'uat' || github.base_ref == 'prod'
-  #   environment: uat 
+  Vulnerability-Test:
+    needs: Basic-Integration-Test
+    runs-on: ubuntu-latest
+    environment: Vulnerability-Test 
 
-  #   steps:
-  #     - name: Deploy
-  #       run: echo "deploy to uat"
-
-  #     - name: Checkout
-  #       uses: actions/checkout@v3
-
-  #     - name: Set Up Node.js
-  #       uses: actions/setup-node@v4
-  #       with:
-  #         node-version: 18
-  #         cache: 'npm'
-
-  #     - name: Install Dependencies
-  #       run: npm install
-
-  #     - name: Configure AWS credentials
-  #       uses: aws-actions/configure-aws-credentials@v1
-  #       with:
-  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         aws-region: ap-southeast-1
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
     - name: Install Snyk
       run: npm install -g snyk
@@ -152,118 +166,56 @@ jobs:
     - name: Run Snyk test
       run: snyk test     
 
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
+  Review:
+    needs: Vulnerability-Test
+    runs-on: ubuntu-latest
+    environment: Review
 
-    - name: Terraform Format
-      run: terraform fmt -recursive
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Terraform fmt
-      run: terraform fmt -check
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-southeast-1
 
-    - name: Terraform Init
-      run: terraform init
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
 
-    - name: Terraform Validate
-      run: terraform validate
+      - name: Terraform Format
+        run: terraform fmt -recursive
 
-    - name: Terraform Plan
-      run: terraform plan
+      - name: Terraform Init
+        run: terraform -chdir=prod init
 
-    - name: Terraform Apply
-      run: terraform apply -auto-approve
+      - name: Terraform Validate
+        run: terraform -chdir=prod validate
 
-  # prod:
-  #   runs-on: ubuntu-latest
-  #   needs: uat
-  #   if: github.base_ref == 'prod'
-  #   environment: prod 
+      - name: Terraform Plan
+        run: terraform -chdir=prod plan
 
-  #   steps:
-  #     - name: Deploy
-  #       run: echo "deploy to prod"
+      - name: Wait for manual approval
+        run: |
+          echo "Waiting for manual approval before applying Terraform changes."
+        timeout-minutes: 5  # Optional, how long to wait before timing out
 
-  #     - name: Checkout
-  #       uses: actions/checkout@v3
+  Deployment:
+    needs: Review
+    runs-on: ubuntu-latest
+    environment: Deployment
 
-  #     - name: Set Up Node.js
-  #       uses: actions/setup-node@v4
-  #       with:
-  #         node-version: 18
-  #         cache: 'npm'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-  #     - name: Install Dependencies
-  #       run: npm install
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
 
-  #     - name: Configure AWS credentials
-  #       uses: aws-actions/configure-aws-credentials@v1
-  #       with:
-  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         aws-region: ap-southeast-1
-    
-  #     - name: Setup Terraform
-  #       uses: hashicorp/setup-terraform@v2
-
-  #     - name: Terraform Init
-  #       run: terraform init
-
-  #     - name: Terraform Plan
-  #       run: terraform plan
-
-  #     - name: Terraform Apply
-  #       run: terraform apply -auto-approve
-      
-
-  #   env:
-  #        AWS_REGION: ap-southeast-1
-  #        DYNAMODB_TABLE: shop_floor_alerts
-    
-  #   steps:
-  #   - name: Checkout Code
-  #     uses: actions/checkout@v4
-    
-  #   - name: Set Up Node.js
-  #     uses: actions/setup-node@v4
-  #     with:
-  #       node-version: 18
-  #       cache: 'npm'
-    
-  #   - name: Install Dependencies
-  #     run: npm install
-    
-  #   - name: Configure AWS Credentials
-  #     uses: aws-actions/configure-aws-credentials@v2
-  #     with:
-  #       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #       aws-region: ${{ env.AWS_REGION }}
-    
-  #   - name: Setup Terraform
-  #     uses: hashicorp/setup-terraform@v2
-
-  #   - name: Terraform Init
-  #     run: terraform init
- 
-    #  - name: Terraform Apply (Deploy Infrastructure)
-    #    run: terraform apply -auto-approve
- 
-    #  - name: Wait for Deployment (Ensure services are up)
-    #    run: sleep 60
- 
-    #  - name: Insert Item into DynamoDB
-    #    env:
-    #      DYNAMODB_TABLE: "shop_floor_alerts"  # DynamoDB table name
-    #      AWS_REGION: "ap-southeast-1"         # AWS Region
-       
-    #    run: |
-    #      aws dynamodb put-item --table-name $DYNAMODB_TABLE --item '{
-    #        "PK": {"S": "PlantA_Line1"},
-    #        "SK": {"S": "KpiName_Production Efficiency"},
-    #        "Plant": {"S": "PlantA"},
-    #        "Line": {"S": "Line1"},
-    #        "KpiName": {"S": "Production Efficiency"},
-    #        "KpiValue": {"N": "95"},
-    #        "ThresholdValue": {"N": "90"}
-    #      }' --region $AWS_REGION
-
+      - name: Terraform Init
+        run: terraform -chdir=prod init
+        
+      # - name: Terraform Apply
+      #   run: terraform -chdir=prod apply -auto-approve
