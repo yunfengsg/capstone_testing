@@ -23,7 +23,7 @@ on:
 jobs:
   prod:
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.tfstate_key }}
+ #   environment: ${{ github.event.inputs.tfstate_key }}
     
     steps:
     - name: Checkout
