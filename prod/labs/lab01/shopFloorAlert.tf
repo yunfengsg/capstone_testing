@@ -145,6 +145,7 @@ resource "aws_lambda_event_source_mapping" "trigger" {
  depends_on = [null_resource.delay]
  
 }
+#
 
 
 
